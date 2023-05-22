@@ -1,6 +1,6 @@
 # Roads to Maps
 
-This Jupyter Notebook is an implementation of road safety corridors analysis using pandas, geopandas, shapely, and fuzzywuzzy. The goal of this implementation is to join corridor information with LINZ road data, process the merged data, and create meaningful geospatial files for visualization and further analysis.
+This Jupyter Notebook is an implementation of Roads to Maps using pandas, geopandas, shapely, and fuzzywuzzy. The goal of this implementation is to join corridor information with LINZ road data, process the merged data, and create meaningful geospatial files for visualization and further analysis.
 
 
 ## Dependencies
