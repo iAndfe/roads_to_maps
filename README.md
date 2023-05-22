@@ -1,71 +1,88 @@
-# Processing and Analyzing Road Networks
+# Roads to Maps
 
-This script is used to process and analyze road networks data. It reads data from .csv files, performs fuzzy matching on road names, merges dataframes, and then applies several geospatial processing tasks using GeoPandas and Shapely.
+This Jupyter Notebook is an implementation of road safety corridors analysis using pandas, geopandas, shapely, and fuzzywuzzy. The goal of this implementation is to join corridor information with LINZ road data, process the merged data, and create meaningful geospatial files for visualization and further analysis.
 
-## Script Description
 
-1. The script starts by importing required libraries: `pandas`, `fuzzywuzzy`, `geopandas`, `shapely`, `ast`, and `numpy`.
+## Dependencies
 
-2. It defines helper functions for preprocessing road names, fuzzy matching road names, converting coordinates to `Point` objects, and checking if a geometry object is a `LineString`.
+Ensure that you have the following Python libraries installed to use this Jupyter Notebook:
 
-3. The `process_csv` function is defined. This function reads two .csv files and performs fuzzy matching on road names. The function returns a dataframe containing matched roads.
+- pandas
+- fuzzywuzzy
+- geopandas
+- shapely
 
-4. The script then calls `process_csv` function with a .csv file. It then filters columns and removes duplicates and rows with missing GPS coordinates. The processed dataframe is saved to a .csv file.
+You can install them using the following command:
 
-5. A GeoDataFrame is read from a .shp file (shapefile). The dataframe read from the .csv file is then converted to a GeoDataFrame, with 'StartPoint' as the geometry column.
+```bash
+pip install -r requirements.txt
+```
 
-6. The script then merges the two GeoDataFrames based on 'road_id'. It applies the `is_linestring` function to filter out rows where 'geometry_road' is a MultiLineString.
+## Input Data
 
-7. The script defines a function for finding the closest point on a line to a given point. This function is applied to find the closest points on the roads to the start and end points.
+The notebook expects the following input files in the `input` folder:
 
-8. A function is defined to cut a `LineString` at two points. This function is then applied to cut the road lines at the start and end points.
+- `sw.csv`: The CSV file containing the corridor information.
 
-9. Unneeded columns are dropped and the 'Road_Segment' column is set as the geometry column.
+The notebook also expects LINZ roads files in the `linz_roads` folder:
 
-10. Finally, the processed GeoDataFrame is saved to a shapefile.
+- `nz-roads-addressing.csv`: The CSV file containing LINZ road data.
+- `roads.shp`: The shapefile for LINZ road data.
+
+## Output Data
+
+The notebook produces the following output files in the `joined` folder:
+
+- `join_table.csv`: The CSV file containing the joined LINZ roads and corridors data.
+- `not_joined.csv`: The CSV file with corridor rows that didn't match any LINZ roads.
+- `with_gps.csv`: The CSV file with rows that have GPS coordinates.
+- `without_gps.csv`: The CSV file with rows that do not have GPS coordinates.
+
+The notebook also creates a final output file, `output/output.shp`, which is the combination of both GPS and non-GPS data as a shapefile for further geospatial analysis.
+
+
+## How to Run
+
+1. Ensure you have installed the dependencies mentioned above.
+2. Place your input data files in the appropriate directories as mentioned in the "Input Data" section.
+3. Run the Jupyter Notebook cells in order.
+4. Check the output files in the `joined` folder and the final output in the `output` folder.
+
+
+## Notebook Overview
+
+The notebook consists of the following sections and descriptions:
+
+1. Importing libraries
+2. Helper functions for preprocessing, fuzzy matching, and manipulating geospatial data.
+3. Function to join corridors and LINZ data based on road names.
+4. Preprocess the joined data, split it into with and without GPS coordinates.
+5. Process the data without GPS to create a GeoDataFrame.
+6. Combine the GeoDataFrames of the with-GPS and without-GPS data.
+7. Save the combined GeoDataFrame to a shapefile in the output folder.
+
+Please refer to the inline comments and markdown cells in the Jupyter Notebook for a detailed understanding of each step.
 
 ## How to Use
 
-1. Prepare your input files: a .csv file for the `process_csv` function and a .shp file for the GeoDataFrame.
-
-2. Run the script in a Jupyter notebook. You can install Jupyter via pip (`pip install jupyter`) or with Anaconda.
-
-3. The script will output a .csv file ('combined.csv') and a shapefile ('output/output.shp'). The .csv file contains data about the roads and the shapefile contains the geometries of the road segments.
-
-## Requirements
-
-This script requires Python 3 and the following libraries: `pandas`, `fuzzywuzzy`, `geopandas`, `shapely`, `ast`, and `numpy`. You can install these libraries via pip:
-
-```
-pip install pandas fuzzywuzzy geopandas shapely numpy
-```
-
-Note: the `fuzzywuzzy` library also requires the `python-Levenshtein` library to speed up processing. You can install it via pip:
-
-```
-pip install python-Levenshtein
-```
+1. Ensure that you have the proper Python environment set up and dependencies installed as mentioned above.
+2. Place your input files (corridor CSV file and LINZ roads files) in the appropriate folders as mentioned in the "Input Data" section.
+3. Open the Jupyter Notebook and run the notebook cells in sequential order from top to bottom. Wait for each cell to execute completely before moving on to the next one.
+4. Monitor the progress of the data processing as the code runs. The final output will be saved in the `output` folder, and intermediate outputs will be saved in the `joined` folder.
 
 ## Caveats and Tips
 
-1. Make sure your input CSV and shapefile follow the correct format that the script expects. Misformatted files can cause errors in execution.
-
-2. Be mindful of the coordinate system of your shapefiles. It's crucial to ensure your data is in the correct spatial reference for accurate geospatial analysis. If your data comes in a different coordinate system, you can use the `to_crs()` function in GeoPandas to convert it to the right one.
-
-3. When performing the fuzzy matching, you might need to adjust the `threshold` value based on your specific use case. A higher threshold will result in stricter matching, potentially leading to fewer matches.
-
-4. The script uses the `Start GPS Co-ordinates` and `End GPS Co-ordinates` columns to determine the start and end points of each road segment. If your dataset uses different column names, you'll need to adjust the script accordingly.
-
-5. The script currently drops rows where the 'geometry_road' is a `MultiLineString`. If your dataset contains a significant number of `MultiLineString` geometries, this may result in a large amount of data being excluded. You may need to adjust this part of the script to better handle `MultiLineString` geometries, depending on your dataset and use case.
-
-6. Keep in mind that the quality of your fuzzy match and subsequent analysis is highly dependent on the quality of your data. Ensure your data is clean and consistent for the best results.
+- The quality of the results is dependent on the quality of the initial data. Make sure your data is clean, formatted correctly, and consistent to ensure the best results.
+- When performing the fuzzy matching, you might need to adjust the `threshold` value based on your specific use case. A higher threshold will result in stricter matching and potentially fewer matches, while a lower threshold will result in more lenient matching with potentially more false positives.
+- Be mindful of the coordinate reference systems (CRS) of your shapefiles. Ensure that your data is in the correct CRS for accurate geospatial analysis. If your data comes in a different CRS, you can use the `to_crs()` function in GeoPandas to convert it to the right one.
+- The script currently drops rows where the 'geometry_road' is a `MultiLineString`. If your dataset contains a significant number of `MultiLineString` geometries, this may result in a large amount of data being excluded. You may need to adjust this part of the script to better handle `MultiLineString` geometries depending on your dataset and use case.
 
 ## Troubleshooting
 
-1. **If you're experiencing issues installing the required libraries**: Make sure you're running a version of Python that's compatible with all the libraries (Python 3 is recommended). If you're using pip to install, try upgrading pip with `pip install --upgrade pip`. 
+1. **Issues installing the required libraries**: Make sure you're running a version of Python that's compatible with all the libraries (Python 3 is recommended). If you're using pip to install, try upgrading pip with `pip install --upgrade pip`. 
 
-2. **If you're encountering errors when running the script**: Check the error message for hints about what's going wrong. If the error is related to a specific line of code, check that part of the script to see if there are any obvious issues.
+2. **Errors when running the script**: Check the error message for hints about what's going wrong. If the error is related to a specific line of code, check that part of the script to see if there are any obvious issues.
 
-3. **If the output doesn't look right or you're missing expected matches**: Check the `threshold` value in the fuzzy matching step. If it's set too high, you may be missing valid matches. Conversely, if it's set too low, you may be getting incorrect matches.
+3. **Output doesn't look right or missing expected matches**: Check the `threshold` value in the fuzzy matching step. If it's set too high, you may be missing valid matches. Conversely, if it's set too low, you may be getting incorrect matches.
 
-For further assistance, you can refer to the documentation of the libraries used: [Pandas](https://pandas.pydata.org/docs/), [FuzzyWuzzy](https://github.com/seatgeek/fuzzywuzzy), [GeoPandas](https://geopandas.org/), [Shapely](https://shapely.readthedocs.io/en/stable/), [ast](https://docs.python.org/3/library/ast.html) and [NumPy](https://numpy.org/doc/). You can also ask for help on forums like Stack Overflow, making sure to provide all necessary details to understand your problem.
+For further assistance, you can refer to the documentation of the libraries used: [Pandas](https://pandas.pydata.org/docs/), [FuzzyWuzzy](https://github.com/seatgeek/fuzzywuzzy), [GeoPandas](https://geopandas.org/), [Shapely](https://shapely.readthedocs.io/en/stable/), and [NumPy](https://numpy.org/doc/). You can also ask for help on forums like Stack Overflow, making sure to provide all necessary details to understand your problem.
