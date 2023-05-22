@@ -1,6 +1,6 @@
-output
-shu_raw
-combined.csv
+input/*
+joined/*
+output/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
