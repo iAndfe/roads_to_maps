@@ -1,0 +1,2 @@
+Corridor ID,Road Name,Land Use,Traffic Volume,Street Category,Collective Risk Band,Personal Risk Band,Posted Speed Limit,Free Flow Speed,IRR Band,Safe and Appropriate Speed,Difference between posted speed limit and SaAS,Difference between operating and SaAS,Proposed Permanent Speed Limit,Proposed Variable Speed Limit,Start GPS Co-ordinates,End GPS Co-ordinates,Processed Road Name
+EAST_075953,EAST-WEST ACCESS RD EAST,Remote Rural,239,Rural Roads,Low,Medium High,100,91,Medium,80,20,11,80,,"[-41.2833794,175.2669956]","[-41.3145469,175.1946237]",east-west
